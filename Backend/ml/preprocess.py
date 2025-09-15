@@ -1,134 +1,196 @@
 import requests
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import warnings
+from datetime import datetime
+
+warnings.filterwarnings('ignore')
 
 # ---------------------------
-# 1. Fetch internships from Node.js API
+# 1. Fetch internships from Node.js API and flatten nested data
 # ---------------------------
-url = "http://localhost:5000/all-internship"
-data = requests.get(url).json()
-df = pd.json_normalize(data)
+try:
+    url = "http://localhost:5000/all-internship"
+    data = requests.get(url, timeout=10).json()
+    df = pd.json_normalize(data)
+except requests.exceptions.RequestException as e:
+    print(f"Error fetching data: {e}")
+    df = pd.DataFrame()
 
-# Flatten fields
-df["skills"] = df["qualification.skills"].apply(lambda x: " ".join(x) if isinstance(x, list) else "")
-df["certificates"] = df["qualification.certificates"].apply(lambda x: " ".join(x) if isinstance(x, list) else "")
-df["title"] = df["title"].fillna("")
-df["sector"] = df["sector"].fillna("")
-df["field"] = df["field"].fillna("")
-df["location"] = df["location.state"].fillna("")
-
-# Add languages if available
-if "qualification.languages" in df.columns:
-    df["languages"] = df["qualification.languages"].apply(lambda x: " ".join(x) if isinstance(x, list) else "")
-else:
-    df["languages"] = ""
-
-# ---------------------------
-# 2. Encode categorical fields (sector)
-# ---------------------------
-encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
-sector_encoded = encoder.fit_transform(df[["sector"]])
-sector_df = pd.DataFrame(sector_encoded, columns=encoder.get_feature_names_out(["sector"]))
-
-# ---------------------------
-# 3. Encode text fields (skills + title + field + location + languages)
-# ---------------------------
-vectorizer = TfidfVectorizer(max_features=100)
-skills_encoded = vectorizer.fit_transform(
-    df["skills"] + " " + df["title"] + " " + df["field"] + " " + df["location"] + " " + df["languages"]
-).toarray()
-skills_df = pd.DataFrame(skills_encoded, columns=vectorizer.get_feature_names_out())
-
-# ---------------------------
-# 4. Normalize numeric features
-# ---------------------------
-numeric_cols = ["stipend", "total_applied"]
-for col in numeric_cols:
-    if col not in df.columns:
-        df[col] = 0
-scaler = StandardScaler()
-numeric_df = pd.DataFrame(
-    scaler.fit_transform(df[numeric_cols]),
-    columns=[f"{c}_scaled" for c in numeric_cols]
-)
-
-# ---------------------------
-# 5. Combine features into ML-ready matrix
-# ---------------------------
-final_features = pd.concat([numeric_df, sector_df, skills_df], axis=1)
-
-# ---------------------------
-# 6. Recommendation Function with Rule-based Bonuses
-# ---------------------------
-def recommend_internships(user_skills, user_sector="", user_location="", user_languages=None, top_n=5):
-    if user_languages is None:
-        user_languages = []
-
-    # 1. Add a hard filter for location at the top
-    # First, make a copy to avoid modifying the original DataFrame
-    filtered_df = df.copy() 
+if not df.empty:
+    # Flatten fields
+    df["skills"] = df["qualification.skills"].apply(lambda x: " ".join(x) if isinstance(x, list) else "")
+    df["certificates"] = df["qualification.certificates"].apply(lambda x: " ".join(x) if isinstance(x, list) else "")
     
-    # If a location is provided, filter the DataFrame
-    if user_location:
-        filtered_df = filtered_df[filtered_df["location"].str.contains(user_location, case=False, na=False)]
+    # Handle languages
+    if "qualification.languages" in df.columns:
+        df["languages"] = df["qualification.languages"].apply(lambda x: " ".join(x) if isinstance(x, list) else "")
+    else:
+        df["languages"] = ""
+    
+    # Handle location fields
+    df["location_state"] = df["location.state"].fillna("")
+    df["location_district"] = df["location.district"].fillna("")
+    
+    df["sector"] = df["sector"].fillna("")
+    df["title"] = df["title"].fillna("")
+    df["field"] = df["field"].fillna("")
+    df["duration"] = df["duration"].fillna("")
+    df["stipend"] = df["stipend"].fillna(0).astype(float)
+    
+    if 'total_applied' not in df.columns:
+        df['total_applied'] = 0.0
+    df["total_applied"] = df["total_applied"].astype(float)
+    
+    # Recency feature
+    if 'posted_date' in df.columns:
+        df['posted_date'] = pd.to_datetime(df['posted_date'], errors='coerce')
+    else:
+        df['posted_date'] = pd.to_datetime(datetime.now()) - pd.to_timedelta(np.random.randint(0, 30, size=len(df)), unit='D')
 
-    # Handle the case where no internships match the location filter
+# ---------------------------
+# 2. Encode all features
+# ---------------------------
+def encode_features(df):
+    if df.empty:
+        return None, None, None, None
+    
+    # OneHotEncoder for Sector
+    encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
+    sector_encoded = encoder.fit_transform(df[["sector"]])
+    sector_df = pd.DataFrame(sector_encoded, columns=encoder.get_feature_names_out(["sector"]))
+
+    # TF-IDF Vectorizer for text features
+    vectorizer = TfidfVectorizer(max_features=100, stop_words='english')
+    text_data = df["skills"] + " " + df["title"] + " " + df["field"] + " " + df["languages"] + " " + df["location_state"] + " " + df["location_district"]
+    skills_encoded = vectorizer.fit_transform(text_data).toarray()
+    skills_df = pd.DataFrame(skills_encoded, columns=vectorizer.get_feature_names_out())
+
+    return encoder, vectorizer, sector_df, skills_df
+
+if not df.empty:
+    encoder, vectorizer, sector_df, skills_df = encode_features(df)
+else:
+    print("DataFrame is empty. Cannot perform encoding.")
+    exit()
+
+# ---------------------------
+# 3. Recommendation Function with Normalized Scoring and Threshold
+# ---------------------------
+def recommend_internships(df, user_profile, top_n=5, min_threshold=0.0, min_skill_threshold=0.2):
+    """
+    Recommends internships based on a user's profile.
+    """
+    user_skills = [s.strip().lower() for s in user_profile.get("Skills", [])]
+    user_languages = [s.strip().lower() for s in user_profile.get("Languages", [])]
+    user_preferred_location_state = user_profile.get("Preferred_location_state", "").lower()
+    user_preferred_location_district = user_profile.get("Preferred_location_district", "").lower()
+    user_preferred_type = user_profile.get("Preferred_type", "").lower()
+    
+    # Step 1: Apply hard location filter
+    filtered_df = df.copy()
+    if user_preferred_location_state and user_preferred_location_district:
+        filtered_df = filtered_df[
+            (filtered_df["location_state"].str.lower().str.contains(user_preferred_location_state)) |
+            (filtered_df["location_district"].str.lower().str.contains(user_preferred_location_district))
+        ]
+
     if filtered_df.empty:
         print("No internships found for the specified location.")
-        return pd.DataFrame() # Return an empty DataFrame
+        return pd.DataFrame()
 
-    # 2. Get the indices of the filtered DataFrame
     filtered_indices = filtered_df.index
     
-    # 3. Use these indices to select the corresponding rows from the feature matrices
-    filtered_skills_df = skills_df.loc[filtered_indices]
-    
-    # ... (repeat for other feature matrices if needed, although for your code it's only skills_df)
-
-    # Build user profile text
-    user_text = " ".join(user_skills) + " " + user_sector + " " + user_location + " " + " ".join(user_languages)
+    # Step 2: Calculate similarities
+    user_text = " ".join(user_skills) + " " + " ".join(user_languages) + " " + user_preferred_location_state + " " + user_preferred_location_district
     user_vector = vectorizer.transform([user_text]).toarray()
     
-    # Cosine similarity on the *filtered* data
-    cos_sim = cosine_similarity(user_vector, filtered_skills_df)[0]
+    cosine_sim = cosine_similarity(user_vector, skills_df.loc[filtered_indices])[0]
     
-    # Rule-based bonuses now apply to the filtered data
-    sector_score = np.array([10 if s.lower() == user_sector.lower() else 0 for s in filtered_df["sector"]])
-    # location_score and language_score calculation would also be updated to use filtered_df
-    location_score = np.array([
-      8 if user_location.lower() in str(loc).lower() else 0 for loc in filtered_df["location"]
-    ])
+    try:
+        user_type_encoded = encoder.transform([[user_preferred_type.capitalize()]]).flatten()
+    except ValueError:
+        user_type_encoded = np.zeros(len(encoder.categories_[0]))
+    
+    sector_sim = np.dot(sector_df.loc[filtered_indices].values, user_type_encoded)
+    
+    # Step 3: Apply the skill-based threshold
+    relevant_indices_by_skill = filtered_indices[cosine_sim > min_skill_threshold]
+    
+    if relevant_indices_by_skill.empty:
+        print(f"No internships found with a skill match above the threshold of {min_skill_threshold * 100}%.")
+        return pd.DataFrame()
 
-    language_score = np.array([
-      5 if any(lang.lower() in str(langs).lower() for lang in user_languages) else 0
-      for langs in filtered_df["languages"]
-    ])
+    # Step 4: Calculate the combined score for the remaining internships
+    relevant_cosine_sim = cosine_sim[cosine_sim > min_skill_threshold]
+    relevant_sector_sim = sector_sim[cosine_sim > min_skill_threshold]
     
-    # Combine scores and sort as before
-    total_score = cos_sim * 50 + sector_score + location_score + language_score
-    matching_prob = (total_score / (50 + 10 + 8 + 5)) * 100
-    top_indices_in_filtered_df = np.argsort(total_score)[::-1][:top_n]
+    text_weight = 0.8
+    sector_weight = 0.2
+    combined_score = (text_weight * relevant_cosine_sim) + (sector_weight * relevant_sector_sim)
 
-    # Map back to original DataFrame indices
-    recommended_indices = filtered_indices[top_indices_in_filtered_df]
+    # Step 5: Increase the "perfect match" bonus
+    perfect_match_bonus = np.zeros(len(relevant_indices_by_skill))
+    for i, idx in enumerate(relevant_indices_by_skill):
+        internship_skills = set(df.loc[idx, "skills"].lower().split())
+        
+        # A stronger bonus (0.2) for each matching skill
+        if any(skill in internship_skills for skill in user_skills):
+            num_matching_skills = len(set(user_skills).intersection(internship_skills))
+            perfect_match_bonus[i] = 0.2 * num_matching_skills
+
+    combined_score += perfect_match_bonus
     
-    recommended = df.loc[recommended_indices][["title", "sector", "location", "skills", "languages"]].copy()
-    recommended["matching_probability"] = matching_prob[top_indices_in_filtered_df].round(2)
+    # Step 6: Increase the recency bonus
+    if 'posted_date' in df.columns:
+        now = pd.to_datetime(datetime.now())
+        recency_decay_rate = 10
+        days_since_posted = (now - df.loc[relevant_indices_by_skill, 'posted_date']).dt.days
+        
+        # A stronger recency bonus (multiplied by a constant)
+        recency_bonus = 0.5 * np.exp(-days_since_posted / recency_decay_rate)
+        combined_score += recency_bonus
+
+    # Step 7: Filter by minimum final score threshold
+    final_relevant_indices = relevant_indices_by_skill[combined_score > min_threshold]
+    final_relevant_scores = combined_score[combined_score > min_threshold]
     
-    return recommended
+    if final_relevant_indices.empty:
+        print(f"No internships found with a combined score above the final threshold of {min_threshold * 100}%.")
+        return pd.DataFrame()
+        
+    # Step 8: Sort and return top results
+    sorted_indices = np.argsort(final_relevant_scores.values)[::-1]
+    
+    recommended_indices = final_relevant_indices.values[sorted_indices][:top_n]
+    recommended_scores = final_relevant_scores.values[sorted_indices][:top_n]
+
+    recommended = df.loc[recommended_indices].copy()
+    
+    # Ensure matching_probability is capped at 100%
+    recommended_scores_percent = np.minimum(recommended_scores * 100, 100.0)
+    recommended["matching_probability"] = recommended_scores_percent.round(2)
+    
+    return recommended[["title", "sector", "location_state", "location_district", "skills", "languages", "matching_probability"]]
 
 # ---------------------------
-# 7. Example usage
+# 4. Example usage
 # ---------------------------
 if __name__ == "__main__":
-    user_skills = ["Electronics,C/c++,Microcontrollers,iot"]
-    user_sector = "Electronics"
-    user_location = "Delhi"
-    user_languages = ["English", "Hindi"]
+    user_profile = {
+        "Skills": ["react"],
+        "Languages": ["English", "Hindi"],
+        "Preferred_type": "IT",
+        "Preferred_location_state": "karnataka",
+        "Preferred_location_district": ""
+    }
+    
+    min_match_score = 0.0
+    min_skill_score = 0.1
 
-    recommended = recommend_internships(user_skills, user_sector, user_location, user_languages)
-    print("\nTop Recommended Internships with Matching Probability:")
-    print(recommended)
+    print("\nRecommendations for the User Profile:")
+    recommended_internships = recommend_internships(df, user_profile, min_threshold=min_match_score, min_skill_threshold=min_skill_score)
+    print(recommended_internships if not recommended_internships.empty else "No recommendations found.")
