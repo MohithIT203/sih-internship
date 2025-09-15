@@ -1,0 +1,127 @@
+.job-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  min-width: 280px;
+  max-width: 320px;
+  flex: 1 1 300px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-sizing: border-box;
+}
+
+.job-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.job-card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+
+.job-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 2px solid #f0f0f5;
+}
+
+.job-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d2d4f;
+  margin: 0;
+}
+
+.company {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.job-info {
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.job-tags {
+  margin: 12px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 18px;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tag:hover {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.job-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.view-job-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.15s ease;
+}
+
+.view-job-btn:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+.view-job-btn:active {
+  transform: scale(0.97);
+}
+
+.skill-match {
+  margin: 12px 0;
+}
+
+.skill-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.skill-bar {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.skill-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
