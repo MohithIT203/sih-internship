@@ -4,9 +4,14 @@ import pic1 from "../assets/pic1.png";
 import pic2 from "../assets/pic2.jpeg";
 import pic3 from "../assets/pic3.jpeg";
 import pic4 from "../assets/pic4.png";
+
 import JobCard from "../components/card";
+import CompanyInternshipModal from "../components/popup";
 
 const Dashboard = () => {
+  const [selectedJob, setSelectedJob] = useState(null);
+
+  // Original job data
   const [data] = useState([
     {
       InternshipID: 1,
@@ -54,9 +59,41 @@ const Dashboard = () => {
       logo: pic4,
       stipend: "$800/month",
       skillMatch: 80,
-      tags: ["Figma", "User Research", "Prototyping"],
+      tags: ["Figma", "User Research", "Prototyping","Ux Design","Adobe"],
     },
   ]);
+
+  // 🔄 Transform JobCard data shape into modal-friendly company object
+  const mapToCompanyFormat = (job) => {
+    if (!job) return null;
+    return {
+      name: job.company,
+      internship: {
+        title: job.InternshipTitle,
+        sector: job.Areafield,
+        area: job.Areafield,
+        opportunities: 1,
+        candidates: job.CandidatesApplied,
+      },
+      description: `This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.`,
+      location: {
+        state: "Tamil Nadu",
+        district: job.location,
+        village: "-",
+        zipcode: "000000",
+      },
+      qualification: {
+        minQualification: "Undergraduate",
+        course: "B.Tech / B.E",
+        certification: "Not mandatory",
+        specialization: job.Areafield,
+        skills: job.tags,
+      },
+      updatedAt: new Date().toISOString(),
+      onApply: () =>
+        alert(`Applied for ${job.InternshipTitle} at ${job.company}`),
+    };
+  };
 
   return (
     <div className="dashboard-wrapper">
@@ -81,21 +118,32 @@ const Dashboard = () => {
         <div className="stat-card">
           <span className="stat-icon">👥</span>
           <h3>Companies</h3>
-          <p>1</p>
+          <p>{data.length}</p>
         </div>
         <div className="stat-card">
           <span className="stat-icon">📈</span>
           <h3>Best Match</h3>
-          <p>63%</p>
+          <p>{Math.max(...data.map((j) => j.skillMatch))}%</p>
         </div>
       </div>
 
       {/* ===== Internship Cards ===== */}
       <div className="dashboard-container">
         {data.map((job) => (
-          <JobCard key={job.InternshipID} job={job} />
+          <JobCard
+            key={job.InternshipID}
+            job={job}
+            onView={() => setSelectedJob(job)} // open modal
+          />
         ))}
       </div>
+
+      {/* ===== Modal Integration ===== */}
+      <CompanyInternshipModal
+        open={Boolean(selectedJob)}
+        onClose={() => setSelectedJob(null)}
+        company={mapToCompanyFormat(selectedJob)}
+      />
     </div>
   );
 };

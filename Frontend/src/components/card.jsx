@@ -1,7 +1,7 @@
 import React from "react";
 import "./card.css";
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, onView }) => {
   return (
     <div className="job-card">
       <div className="job-card-header">
@@ -46,7 +46,10 @@ const JobCard = ({ job }) => {
       </div>
 
       <div className="job-footer">
-        <button className="view-job-btn">View Job ↗</button>
+        {/* 🔗 Call onView when button is clicked */}
+        <button className="view-job-btn" onClick={onView}>
+          View Job ↗
+        </button>
       </div>
     </div>
   );
