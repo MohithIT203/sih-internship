@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log(email);
+
   try {
     if (!email || !password) {
       return res.status(404).send({ massage: "All fields are required" });
@@ -16,7 +16,9 @@ router.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.status(404).send({ message: "Email or password is wrong" });
     }
-    res.status(200).send({ message: "Login Successfull" });
+   res.json({
+      _id: dbuser._id,
+    });
   } catch (err) {
     return res.status(500).send(err);
   }
@@ -41,11 +43,11 @@ router.post("/register", async (req, res) => {
       email,
       password: hashedPassword,
     });
-
     await newUser.save();
 
-    await register.save();
-    res.status(200).send({ message: "Registered" }, register);
+    res.json({
+      _id: newUser._id,
+    });
   } catch (err) {
     return res.status(500).send(err);
   }

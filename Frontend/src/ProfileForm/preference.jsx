@@ -8,6 +8,7 @@ import {
   Chip,
 } from "@mui/material";
 import Buttons from "./buttons";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // Utility to normalize and remove diacritics
@@ -21,7 +22,7 @@ function uniqueArray(arr) {
   return [...new Set((arr || []).filter(Boolean))];
 }
 
-export default function Preference({ pointer, setPointer }) {
+export default function Preference({ pointer, setPointer, inputs, setInputs }) {
   const [sector, setSector] = useState("");
   const [sectors, setSectors] = useState([]);
   const [states, setStates] = useState([]);
@@ -33,6 +34,7 @@ export default function Preference({ pointer, setPointer }) {
     state: false,
     districts: false,
   });
+  const userId = localStorage.getItem("user");
 
   // Fetch sectors on mount
   useEffect(() => {
@@ -44,6 +46,23 @@ export default function Preference({ pointer, setPointer }) {
       "Finance",
     ];
     setSectors(uniqueArray(sectorNames));
+    async function fetchSectors() {
+      try {
+        // Using a static array for demonstration (you can replace with a working API)
+        const sectorNames = [
+          "IT",
+          "Marketing",
+          "Electronics",
+          "Healthcare",
+          "Finance",
+        ];
+        setSectors(uniqueArray(sectorNames));
+      } catch (err) {
+        console.error("Error fetching sectors:", err);
+        setSectors(["IT", "Marketing", "Electronics", "Healthcare", "Finance"]); // fallback
+      }
+    }
+    fetchSectors();
   }, []);
 
   // Fetch states on mount
@@ -68,7 +87,7 @@ export default function Preference({ pointer, setPointer }) {
     }
     fetchStates();
   }, []);
-
+  
   // Fetch districts when selectedState changes
   useEffect(() => {
     if (!selectedState) {
@@ -99,21 +118,52 @@ export default function Preference({ pointer, setPointer }) {
 
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    const newErrors = {
-      sector: sector === "",
-      state: selectedState === "",
-      districts: selectedDistricts.length === 0,
-    };
-    navigate("/dashboard");
-    setErrors(newErrors);
-    if (Object.values(newErrors).some(Boolean)) return;
-
-    console.log({ sector, state: selectedState, districts: selectedDistricts });
-    if (pointer <= 2) setPointer(pointer + 1);
+  
+    useEffect(() => {
+      setInputs((prev) => ({
+        ...prev,
+        sector: sector,
+        state: selectedState,
+        districts: selectedDistricts,
+      }));
+    }, [sector, selectedState, selectedDistricts, setInputs]);
+  
+ const handleSubmit = async () => {
+  const newErrors = {
+    sector: sector === "",
+    state: !selectedState,
+    districts: selectedDistricts.length === 0,
   };
+  setErrors(newErrors);
+
+  if (Object.values(newErrors).some(Boolean)) return;
+
+  try {
+    const payload = {
+      course: inputs.course,        
+      branch: inputs.branch,
+      skills: inputs.skills,
+      languages: inputs.languages,
+      sector: sector,
+      state: selectedState,
+      districts: selectedDistricts
+    };
+
+    const res = await axios.post(`http://localhost:5000/profile/${userId}`, payload);
+    console.log("Profile Response:", res.data);
+
+    navigate("/dashboard");
+  } catch (err) {
+    console.error("An Error Occurred:", err.response?.data || err.message);
+  }
+
+  if (pointer <= 2) setPointer(pointer + 1);
+};
 
   return (
+    <Box
+      sx={{ maxWidth: 600, display: "flex", flexDirection: "column", gap: 4 }}
+    >
     <Box
       sx={{ maxWidth: 600, display: "flex", flexDirection: "column", gap: 4 }}
     >
@@ -127,11 +177,14 @@ export default function Preference({ pointer, setPointer }) {
         fullWidth
         label="Sector *"
         value={sector}
-        onChange={(e) => setSector(e.target.value)}
+        onChange={(e) => {
+          setSector(e.target.value);
+        }}
         error={errors.sector}
         helperText={errors.sector ? "Please select sector" : ""}
         SelectProps={{ native: false }}
-      >
+        
+        >
         {sectors.map((type) => (
           <MenuItem key={type} value={type}>
             {type}
@@ -144,11 +197,10 @@ export default function Preference({ pointer, setPointer }) {
         select
         fullWidth
         label="Preferred State *"
-        value={selectedState}
+        value={selectedState || ""}
         onChange={(e) => {
           setSelectedState(e.target.value);
-          setSelectedDistricts([]); // Reset districts
-          setErrors((prev) => ({ ...prev, state: false, districts: false }));
+          setSelectedDistricts([]); 
         }}
         error={errors.state}
         helperText={errors.state ? "Please select a state" : ""}
@@ -186,6 +238,7 @@ export default function Preference({ pointer, setPointer }) {
           />
         )}
       />
+     
 
       {/* Buttons */}
       <Buttons
@@ -193,6 +246,8 @@ export default function Preference({ pointer, setPointer }) {
         setPointer={setPointer}
         handleSubmit={handleSubmit}
       />
+     
+    </Box>
     </Box>
   );
 }

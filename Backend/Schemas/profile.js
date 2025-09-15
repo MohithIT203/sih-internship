@@ -13,19 +13,24 @@ const profileSchema = new mongoose.Schema({
   },
   Skills: {
     type: Array,
-    default: [],
+    default: [String],
   },
   Languages: {
     type: Array,
-    default: [],
+    default: [String],
   },
   Preferred_type: {
     type: String,
     required: true,
   },
-  Preferred_location: {
+  Preferred_state: {
     type: String,
     required: true,
+  },
+  Preferred_district: {
+    type: [String],
+    required: true,
+    default: [String],
   },
 });
 

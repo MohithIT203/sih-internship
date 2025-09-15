@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./signin.css";
-// import InternshipProfileForm from "../ProfileForm/internshipProfileForm";
-import { useNavigate } from "react-router";
 
+
+  import axios from "axios";
+import { useNavigate } from "react-router";
 export default function SigninPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -16,34 +17,38 @@ export default function SigninPage() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!formData.termsAccepted) {
-      alert("You must accept the Terms and Conditions.");
-      return;
-    }
-    try{
-      const login = await axios.post("http://localhost:5000/register",{
-        username:formData.username,
-        email:formData.email,
-        password:formData.password
-      })
-      .then(()=>{
-        navigate("/dashboard")
-      })
+  if (formData.password !== formData.confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
 
-    }catch(err){
-      console.log("An Error Occurred",err);
-    }
-    console.log("Registration attempt:", formData);
+  if (!formData.termsAccepted) {
+    alert("You must accept the Terms and Conditions.");
+    return;
+  }
+
+  try {
+    const response = await axios.post("http://localhost:5000/register", {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    // Save user ID in localStorage
+    localStorage.setItem("user", response.data._id);
+
     alert("Account registered successfully!");
-  };
+    navigate("/form"); // navigate after success
+  } catch (err) {
+    console.error("Registration Error:", err);
+    alert(err.response?.data?.message || "Registration failed");
+  }
+};
+
 
   return (
     <div className="signin-container">
@@ -148,7 +153,7 @@ export default function SigninPage() {
           <button
             type="submit"
             className="register-btn"
-            onClick={() => navigate("/form")}
+            disabled={!formData.termsAccepted}
           >
             Register
           </button>

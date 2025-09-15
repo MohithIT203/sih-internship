@@ -8,6 +8,7 @@ import LoginPage from "./components/login";
 import SigninPage from "./components/signin";
 import InternshipProfileForm from "./ProfileForm/internshipProfileForm";
 import "./index.css";
+import Recommendations from "./pages/recommend";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      {/* <Route path="/dashboard" element={<Recommendations />} /> */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SigninPage />} />
       <Route path="/form" element={<InternshipProfileForm/>} />

@@ -1,67 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
-import pic1 from "../assets/pic1.png";
-import pic2 from "../assets/pic2.jpeg";
-import pic3 from "../assets/pic3.jpeg";
-import pic4 from "../assets/pic4.png";
-
 import JobCard from "../components/card";
 import CompanyInternshipModal from "../components/popup";
 
 const Dashboard = () => {
   const [selectedJob, setSelectedJob] = useState(null);
+  const [data, setData] = useState([]); // internships from backend
+  const [loading, setLoading] = useState(true);
 
-  // Original job data
-  const [data] = useState([
-    {
-      InternshipID: 1,
-      InternshipTitle: "Software Engineer",
-      Areafield: "Development",
-      CandidatesApplied: 20,
-      company: "Tech Corp",
-      location: "Sathyamangalam",
-      logo: pic1,
-      stipend: "$1k/month",
-      skillMatch: 63,
-      tags: ["Frontend", "React", "Agile"],
-    },
-    {
-      InternshipID: 2,
-      InternshipTitle: "Product Manager",
-      Areafield: "Development",
-      CandidatesApplied: 15,
-      company: "Innovate Ltd",
-      location: "Chennai",
-      logo: pic2,
-      stipend: "$1.2k/month",
-      skillMatch: 75,
-      tags: ["Product Strategy", "Leadership", "Scrum"],
-    },
-    {
-      InternshipID: 3,
-      InternshipTitle: "Data Analyst",
-      Areafield: "Data Science",
-      CandidatesApplied: 12,
-      company: "DataWorks",
-      location: "Salem",
-      logo: pic3,
-      stipend: "$900/month",
-      skillMatch: 50,
-      tags: ["SQL", "Python", "Analytics"],
-    },
-    {
-      InternshipID: 4,
-      InternshipTitle: "UI/UX Designer",
-      Areafield: "Design",
-      CandidatesApplied: 10,
-      company: "BIT",
-      location: "Erode",
-      logo: pic4,
-      stipend: "$800/month",
-      skillMatch: 80,
-      tags: ["Figma", "User Research", "Prototyping","Ux Design","Adobe"],
-    },
-  ]);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("user");
+    if (!userId) {
+      console.error("❌ No user ID found in localStorage");
+      setLoading(false);
+      return;
+    }
+
+    fetch(`http://localhost:8000/recommendations/${userId}`)
+    // fetch(`http://localhost:5000/all-internship`) // temp endpoint
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch recommendations");
+        return res.json();
+      })
+      .then((data) => {
+        console.log("✅ Recommendations:", data);
+        // Transform API response to fit JobCard structure
+        const transformed = data.map((item, idx) => ({
+          InternshipID: idx + 1,
+          InternshipTitle: item.title,
+          Areafield: item.sector || item.field || "General",
+          CandidatesApplied: item.total_applied || 0,
+          company: item.company || "Unknown Company",
+          location: item.location_district || "Unknown",
+          stipend: item.stipend || "N/A",
+          skillMatch: Math.round(item.matching_probability || item.similarity * 100),
+          tags: item.skills || [],
+        }));
+        setData(transformed);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+        setLoading(false);
+      });
+  }, []);
 
   // 🔄 Transform JobCard data shape into modal-friendly company object
   const mapToCompanyFormat = (job) => {
@@ -75,7 +58,7 @@ const Dashboard = () => {
         opportunities: 1,
         candidates: job.CandidatesApplied,
       },
-      description: `This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.`,
+      description: `This is an internship for ${job.InternshipTitle}. Stipend is ${job.stipend}.`,
       location: {
         state: "Tamil Nadu",
         district: job.location,
@@ -113,7 +96,14 @@ const Dashboard = () => {
         <div className="stat-card">
           <span className="stat-icon">🎯</span>
           <h3>Avg Match Score</h3>
-          <p>63%</p>
+          <p>
+            {data.length > 0
+              ? Math.round(
+                  data.reduce((acc, j) => acc + j.skillMatch, 0) / data.length
+                )
+              : 0}
+            %
+          </p>
         </div>
         <div className="stat-card">
           <span className="stat-icon">👥</span>
@@ -123,19 +113,27 @@ const Dashboard = () => {
         <div className="stat-card">
           <span className="stat-icon">📈</span>
           <h3>Best Match</h3>
-          <p>{Math.max(...data.map((j) => j.skillMatch))}%</p>
+          <p>
+            {data.length > 0 ? Math.max(...data.map((j) => j.skillMatch)) : 0}%
+          </p>
         </div>
       </div>
 
       {/* ===== Internship Cards ===== */}
       <div className="dashboard-container">
-        {data.map((job) => (
-          <JobCard
-            key={job.InternshipID}
-            job={job}
-            onView={() => setSelectedJob(job)} // open modal
-          />
-        ))}
+        {loading ? (
+          <p>⏳ Loading recommendations...</p>
+        ) : data.length === 0 ? (
+          <p>No recommendations found</p>
+        ) : (
+          data.map((job) => (
+            <JobCard
+              key={job.InternshipID}
+              job={job}
+              onView={() => setSelectedJob(job)} // open modal
+            />
+          ))
+        )}
       </div>
 
       {/* ===== Modal Integration ===== */}

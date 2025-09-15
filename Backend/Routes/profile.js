@@ -2,19 +2,43 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const user = require("../Schemas/users.js");
-const profile = require("../Schemas/internships.js");
+const profile = require("../Schemas/profile.js");
 
-router.post("/profile/:id", async (req, res) => {
-  const {course,branch,skills,languages,sector,state,district}=req.body;
-  const {id}=req.params;
+router.post("/profile/:userId", async (req, res) => {
+  const { course, branch, skills, languages, sector, state, districts } = req.body;
+  const { userId } = req.params;
+
   try {
-    const response = await profile.findone 
-  }
-  catch(err){
-    return res.status(500).send({message:"An error occurred"})
+    let response = await profile.findOne({ userid: userId });
+
+    if (!response) {
+      const newProfile = new profile({
+        userid: userId,
+        Branch: branch,
+        Course: course,
+        Skills: skills,
+        Languages: languages,
+        Preferred_type: sector,
+        Preferred_state: state,
+        Preferred_district: districts
+      });
+      await newProfile.save();
+      return res.status(201).json({ message: "Profile Created", profile: newProfile });
+    }
+
+    return res.status(200).json({ message: "Profile already exists", profile: response });
+  } catch (err) {
+    return res.status(500).json({ message: "Error", error: err.message });
   }
 });
 
-
-
+router.get("/profile/:userId", async (req, res) => {
+  try {
+    const user_profile = await profile.findOne({ userid: req.params.userId });
+    if (!user_profile) return res.status(404).json({ error: "Profile not found" });
+    res.json(user_profile);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 module.exports = router;

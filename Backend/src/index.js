@@ -6,6 +6,8 @@ const PORT = process.env.PORT||5000;
 
 const register = require('../Routes/register');
 const internship = require('../Routes/internship');
+const profile = require('../Routes/profile');
+
 const app = express();
 
 app.use(express.json());
@@ -21,6 +23,7 @@ mongoose.connect(process.env.MONGO_URI)
 })
 app.use(register);
 app.use(internship);
+app.use(profile);
 app.listen(PORT, () => {
     console.log(`Running on Port ${PORT}`);
 })

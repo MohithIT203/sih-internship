@@ -12,21 +12,23 @@ export default function LoginPage() {
   });
   
   const navigate=useNavigate();
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    try{
-      const login = await axios.post("http://localhost:5000/login",{
-        email:formData.email,
-        password:formData.password
-      })
-      .then(()=>{
-        navigate("/form")
-      })
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post("http://localhost:5000/login", {
+      email: formData.email,
+      password: formData.password,
+    });
 
-    }catch(err){
-      console.log("An Error Occurred",err);
-    }
-  };
+      // console.log("Login successful:", response.data);
+    localStorage.setItem("user", response.data._id);
+    console.log("User ID stored in localStorage:", response.data._id);
+
+    navigate("/form");
+  } catch (err) {
+    console.log("An Error Occurred", err.response?.data || err.message);
+  }
+};
 
   return (
     <div className="login-container">
