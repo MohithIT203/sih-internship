@@ -3,7 +3,7 @@ import { SchoolIcon } from "../assets/icons";
 import { MenuItem, TextField, Typography } from "@mui/material";
 import Buttons from "./buttons";
 
-export default function Education({ pointer, setPointer }) {
+export default function Education({ pointer, setPointer, setInputs }) {
   const degree = {
     "B.Tech / B.E": ["Computer Science", "Mechanical", "Electrical", "Civil", "Electronics", "AI & ML", "IT"],
     "B.Arch": ["Architecture"],
@@ -29,6 +29,12 @@ export default function Education({ pointer, setPointer }) {
     setErrors(newErrors);
 
     if (Object.values(newErrors).some(Boolean)) return;
+
+     setInputs((prev) => ({
+      ...prev,
+      course: course,  
+      branch: branch 
+    }));
 
     console.log({ course, branch });
     setPointer(pointer + 1);
