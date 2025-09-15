@@ -1,0 +1,97 @@
+body {
+  overflow-x: hidden;
+}
+
+.dashboard-wrapper {
+  width: 100%;
+  background: #f8f9ff;
+  padding: 40px 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header */
+.recommendations-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.recommendations-icon {
+  font-size: 28px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recommendations-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #3a3a66;
+  margin-bottom: 12px;
+}
+
+.recommendations-header p {
+  font-size: 15px;
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Stats Section */
+.recommendation-stats {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin: 20px auto 50px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 25px 20px;
+  border-radius: 16px;
+  width: 230px;
+  text-align: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.stat-card h3 {
+  font-size: 15px;
+  color: #444;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.stat-card p {
+  font-size: 20px;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
+}

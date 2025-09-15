@@ -1,0 +1,161 @@
+/* Background */
+
+.signin-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #e6f2ff;
+  color: #000000 !important;
+}
+
+/* Header */
+.signin-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+
+.icon {
+  font-size: 24px;
+  color: white;
+}
+
+.signin-header h1 {
+  font-size: 26px;
+  font-weight: bold;
+  margin: 0;
+  color: #111;
+}
+
+.signin-header p {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Card */
+.signin-card {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+.signin-card h2 {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.signin-card .description {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* Input fields */
+.signin-card label {
+  display: block;
+  font-size: 14px;
+  color: #000000 !important;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.signin-card input {
+  width: 95%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.signin-card input:focus {
+  border-color: #f63b3b;
+}
+
+/* Password field */
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-passwords {
+  position: absolute;
+  margin-left: 258px;
+  margin-top: -37px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Options row */
+.options {
+  display: flex;
+  justify-content: flex-start; /* keep terms left aligned */
+  align-items: center;
+  margin-bottom: 18px;
+  font-size: 14px;
+  white-space: nowrap; 
+}
+
+.options,.remember{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #374151;
+
+}
+
+/* Register Button */
+.register-btn {
+  width: 100%;
+  padding: 12px;
+  background: #3b82f6;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.register-btn:hover {
+  background: #2563eb;
+}
+
+/* Autofill fix */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #000000 !important;
+  caret-color: #000000 !important;
+}
