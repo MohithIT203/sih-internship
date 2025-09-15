@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./signin.css";
+// import InternshipProfileForm from "../ProfileForm/internshipProfileForm";
+import { useNavigate } from "react-router";
 
 export default function SigninPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,6 +12,8 @@ export default function SigninPage() {
     confirmPassword: "",
     termsAccepted: false,
   });
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -110,12 +114,18 @@ export default function SigninPage() {
                   setFormData({ ...formData, termsAccepted: e.target.checked })
                 }
               />{" "}
-              <p style={{position:"relative",top:"-7px",left:"10px"}}>Accept Terms and Conditions</p>
+              <p style={{ position: "relative", top: "-7px", left: "10px" }}>
+                Accept Terms and Conditions
+              </p>
             </label>
           </div>
 
           {/* Register Button */}
-          <button type="submit" className="register-btn">
+          <button
+            type="submit"
+            className="register-btn"
+            onClick={() => navigate("/form")}
+          >
             Register
           </button>
         </form>
