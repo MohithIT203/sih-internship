@@ -1,0 +1,205 @@
+body{
+    background-color: rgb(231, 239, 240);
+}
+.header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;            
+  padding: 20px 40px;             
+}
+
+.Title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: 5%;
+}
+
+/* Buttons container */
+.button-group {
+  display: flex;
+  gap: 15px;  
+}
+
+.Sign-In{
+padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: rgb(0, 0, 0);
+  transition: 0.3s;
+}
+.Start {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #4a90e2;
+  color: white;
+  transition: 0.3s;
+}
+
+.Sign-In:hover{
+    color: rgb(30, 123, 190);
+    background-color: rgb(184, 227, 232);
+}
+.Start:hover {
+  background-color: #357abd;
+}
+.image-section {
+  position: relative;
+  height: 400px;
+  background-image: url("../assets/hero-background-BQsm3jJT.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.8); /* adjust opacity here */
+  z-index: 0; /* stays behind */
+}
+
+.image-section p {
+  position: relative;
+  z-index: 1; /* keep text above overlay */
+}
+.btn-div{
+    z-index: 1;
+    /* display: flex;
+    justify-content: space-evenly; */
+}
+.img-sign{
+padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+ margin-right: 20px;
+  background-color: rgb(30, 123, 190);
+  transition: 0.3s;
+}
+.img-log{
+    padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: black;
+  background-color:rgba(255, 255, 255, 0.7);
+  transition: 0.3s;
+}
+.img-log:hover{
+    padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  background-color: rgba(113, 167, 206, 0.5);
+  transition: 0.3s;
+}
+.img-sign:hover{
+background-color: rgb(67, 117, 154);
+}
+
+.body-section{
+    text-align: center;
+}
+.body-p
+{
+    font-weight: bold;
+    font-size: 35px;
+    font-family:sans-serif;
+}
+.body-p2{
+    font-size: larger;
+    font-family: sans-serif;
+}
+.cards {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 30px;
+  margin: 50px auto;
+  max-width: 1100px;
+  flex-wrap: wrap; /* responsive */
+  font-family: sans-serif;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 280px;
+  max-width: 350px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: left;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(87, 161, 241, 0.2);
+}
+
+.card h3 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.card .subtitle {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.card ul li {
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #333;
+  position: relative;
+  padding-left: 18px;
+}
+
+.card ul li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #4a90e2;
+  font-size: 14px;
+}
+.footer{
+    text-align: center;
+}
+.final-btn{
+padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  color: white;
+  background-color: rgb(30, 123, 190);
+  transition: 0.5s;
+}
+.final-btn:hover{
+      background-color: rgb(25, 129, 203);
+}
