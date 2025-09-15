@@ -6,7 +6,11 @@ const profileSchema = new mongoose.Schema({
     ref: "Users",
     required: true,
   },
-  Education: { type: String, required: true },
+  Course: { type: String, required: true },
+  Branch:{
+    type:String,
+    required:true
+  },
   Skills: {
     type: Array,
     default: [],
@@ -21,14 +25,6 @@ const profileSchema = new mongoose.Schema({
   },
   Preferred_location: {
     type: String,
-    required: true,
-  },
-  percent_10: {
-    type: Number,
-    required: true,
-  },
-  percent_12: {
-    type: Number,
     required: true,
   },
 });

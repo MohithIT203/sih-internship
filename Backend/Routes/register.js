@@ -6,13 +6,13 @@ const bcrypt = require("bcrypt");
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log(email);
   try {
     if (!email || !password) {
       return res.status(404).send({ massage: "All fields are required" });
     }
-    const dbuser = await User.find({ email: email });
-
-    const isMatch = await bcrypt.compare(password, dbUser.password);
+    const dbuser = await User.findOne({ email: email });
+    const isMatch = await bcrypt.compare(password, dbuser.password.toString());
     if (!isMatch) {
       return res.status(404).send({ message: "Email or password is wrong" });
     }

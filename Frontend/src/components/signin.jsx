@@ -8,6 +8,7 @@ export default function SigninPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
+    email:"",
     password: "",
     confirmPassword: "",
     termsAccepted: false,
@@ -15,7 +16,7 @@ export default function SigninPage() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
@@ -27,7 +28,19 @@ export default function SigninPage() {
       alert("You must accept the Terms and Conditions.");
       return;
     }
+    try{
+      const login = await axios.post("http://localhost:5000/register",{
+        username:formData.username,
+        email:formData.email,
+        password:formData.password
+      })
+      .then(()=>{
+        navigate("/dashboard")
+      })
 
+    }catch(err){
+      console.log("An Error Occurred",err);
+    }
     console.log("Registration attempt:", formData);
     alert("Account registered successfully!");
   };
@@ -56,6 +69,17 @@ export default function SigninPage() {
             value={formData.username}
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
+            }
+            required
+          />
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
             }
             required
           />

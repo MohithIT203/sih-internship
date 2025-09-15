@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+
 import "./login.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -7,10 +10,22 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
-
-  const handleSubmit = (e) => {
+  
+  const navigate=useNavigate();
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Login attempt:", formData);
+    try{
+      const login = await axios.post("http://localhost:5000/login",{
+        email:formData.email,
+        password:formData.password
+      })
+      .then(()=>{
+        navigate("/form")
+      })
+
+    }catch(err){
+      console.log("An Error Occurred",err);
+    }
   };
 
   return (

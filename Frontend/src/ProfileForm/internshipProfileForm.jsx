@@ -20,7 +20,7 @@ export default function InternshipProfileForm() {
   
 
   return (
-    <div className="flex justify-center mt-16">
+    <div className="flex justify-center mt-24">
       <div className="shadow-2xl rounded-2xl flex">
         {/* Left Sidebar Stepper */}
         <div className="flex flex-col bg-gradient-to-b from-[#D8DFFE] to-[#FCE6CB] rounded-l-2xl p-20 border-r border-gray-300">
