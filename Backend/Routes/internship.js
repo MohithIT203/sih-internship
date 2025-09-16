@@ -53,3 +53,5 @@ router.post("/internship/bulk", async (req, res) => {
 });
 
 module.exports = router;
+
+
