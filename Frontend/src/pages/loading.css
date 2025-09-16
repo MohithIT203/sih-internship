@@ -1,0 +1,101 @@
+/* Fullscreen center */
+.loading-container {
+  min-height: 100vh;
+  background: linear-gradient(
+    to bottom right,
+    #f9fafb,
+    rgba(59, 130, 246, 0.1),
+    rgba(16, 185, 129, 0.05)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card styling */
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+
+  width: 100%; /* card takes full width of parent */
+  max-width: 550px; /* but never exceeds 550px */
+  /* min-width: 300px; */
+  margin: 0 auto; /* center the card horizontally */
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Icon pulse */
+.icon-pulse {
+  height: 3rem;
+  width: 3rem;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1.5s infinite;
+}
+
+.icon {
+  color: white;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Text */
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+/* Progress bar */
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+  transition: width 0.2s ease-in-out;
+}
+
+.progress-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}

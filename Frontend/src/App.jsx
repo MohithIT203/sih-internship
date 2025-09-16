@@ -8,6 +8,7 @@ import LoginPage from "./components/login";
 import SigninPage from "./components/signin";
 import InternshipProfileForm from "./ProfileForm/internshipProfileForm";
 import "./index.css";
+import LoadingPage from "./pages/loading";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SigninPage />} />
+      <Route path="/load" element={<LoadingPage/>} />
       <Route path="/form" element={<InternshipProfileForm/>} />
       
     </Routes>

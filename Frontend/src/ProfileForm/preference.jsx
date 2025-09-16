@@ -105,7 +105,7 @@ export default function Preference({ pointer, setPointer }) {
       state: selectedState === "",
       districts: selectedDistricts.length === 0,
     };
-    navigate("/dashboard");
+    navigate("/load");
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
 

@@ -22,7 +22,7 @@ const JobCard = ({ job, onView }) => {
           <strong>👥 Applied:</strong> {job.CandidatesApplied}
         </p>
         <p>
-          <strong>💰 Stipend:</strong> {job.stipend}
+          <strong>💰 Stipend:</strong>${job.stipend} k/month
         </p>
       </div>
 

@@ -43,7 +43,6 @@ function Landing() {
             color: "rgba(49, 48, 48, 1)",
             fontSize: "20px",
             fontWeight: "7px",
-
             zIndex: 1,
           }}
         >
