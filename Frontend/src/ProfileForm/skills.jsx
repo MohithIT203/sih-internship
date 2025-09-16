@@ -24,8 +24,9 @@ const indianLanguages = [
 ];
 
 export default function Skills({ pointer, setPointer, setInputs }) {
-  const [skills, setSkills] = useState([]);
-  const [languages, setLanguages] = useState([]);
+  const userProfile = localStorage.getItem("profile");
+  const [skills, setSkills] = useState(userProfile ? JSON.parse(userProfile).Skills : []);
+  const [languages, setLanguages] = useState(userProfile ? JSON.parse(userProfile).Languages : []);
   const [errors, setErrors] = useState({
     skills: false,
     languages: false,

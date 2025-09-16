@@ -3,23 +3,23 @@
 
 
 /* For Chrome, Edge, Safari */
-::-webkit-scrollbar {
-  width: 8px;               /* scrollbar width */
+/* ::-webkit-scrollbar {
+  width: 8px;               
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;        /* track color */
-  border-radius: 10px;        /* round the track */
+  background: #f1f1f1;       
+  border-radius: 10px;        
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;           /* scrollbar thumb color */
-  border-radius: 16px;        /* round the scrollbar */
+  background: #888;         
+  border-radius: 16px;       
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;           /* hover effect */
-}
+  background: #999;           
+} */
 
 
 

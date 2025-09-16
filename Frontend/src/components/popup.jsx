@@ -15,13 +15,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-// CompanyInternshipModal.jsx
-// Default-exported React component showing a Material UI Dialog (popup) with
-// structured sections for Internship details, Description, Location and
-// Qualification details. Includes an example usage at the bottom.
+
 
 export default function CompanyInternshipModal({ open, onClose, company }) {
-  // fallback safe values so component is resilient to missing fields
   const c = {
     name: "—",
     internship: {
@@ -71,7 +67,7 @@ export default function CompanyInternshipModal({ open, onClose, company }) {
             width: "100%",
             height: "30px",
             textAlign: "center",
-            background: "linear-gradient(135deg, #c7d2fe, #ddd6fe)", // light indigo → light purple
+            background: "linear-gradient(135deg, #c7d2fe, #ddd6fe)", 
             color: "#333",
             fontWeight: 600,
             alignContent: "center",
@@ -138,7 +134,7 @@ export default function CompanyInternshipModal({ open, onClose, company }) {
             width: "100%",
             height: "30px",
             textAlign: "center",
-            background: "linear-gradient(135deg, #c7d2fe, #ddd6fe)", // light indigo → light purple
+            background: "linear-gradient(135deg, #c7d2fe, #ddd6fe)",
             color: "#333",
             fontWeight: 600,
             alignContent: "center",
@@ -250,8 +246,6 @@ export default function CompanyInternshipModal({ open, onClose, company }) {
         <Button
           variant="contained"
           onClick={() => {
-            // placeholder action - in a real app you might apply, save, or open details
-            // keep simple so integrators can hook in their logic
             if (typeof company?.onApply === "function") company.onApply();
             onClose();
           }}
@@ -280,9 +274,6 @@ CompanyInternshipModal.propTypes = {
   company: PropTypes.object,
 };
 
-// ------------------- Example usage -------------------
-// The example below shows how to integrate the modal in a parent component.
-// Copy/paste this snippet into a page or component to test the modal.
 
 export function ExampleUsage() {
   const [open, setOpen] = React.useState(false);
@@ -313,7 +304,6 @@ export function ExampleUsage() {
     },
     updatedAt: new Date().toISOString(),
     onApply: () => {
-      // hook for parent to handle apply action
       alert("Apply clicked — integrate your flow here");
     },
   };
@@ -333,15 +323,3 @@ export function ExampleUsage() {
   );
 }
 
-/*
-Integration notes:
-1. Install Material UI v5 packages if you haven't already:
-   npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
-
-2. The component is intentionally read-focused. If you want editable fields,
-   swap the Typography elements with TextField components and wire change handlers.
-
-3. The ExampleUsage export is included so you can paste this file into your
-   project and render <ExampleUsage /> to test. In production import default
-   CompanyInternshipModal and provide your company object and handlers.
-*/

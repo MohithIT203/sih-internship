@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
 import JobCard from "../components/card";
 import CompanyInternshipModal from "../components/popup";
+import { AppBar } from "@mui/material";
+import Navbar from "../components/navbar";
 
 const Dashboard = () => {
   const [selectedJob, setSelectedJob] = useState(null);
@@ -24,8 +26,6 @@ const Dashboard = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("✅ Recommendations:", data);
-        // Transform API response to fit JobCard structure
         const transformed = data.map((item, idx) => ({
           InternshipID: idx + 1,
           InternshipTitle: item.title,
@@ -79,6 +79,9 @@ const Dashboard = () => {
   };
 
   return (
+    <>
+    {/* <AppBar/> */}
+    <Navbar/>
     <div className="dashboard-wrapper">
       {/* ===== AI Recommendations Header ===== */}
       <div className="recommendations-header">
@@ -135,14 +138,16 @@ const Dashboard = () => {
           ))
         )}
       </div>
+      <div>
 
-      {/* ===== Modal Integration ===== */}
+      </div>
       <CompanyInternshipModal
         open={Boolean(selectedJob)}
         onClose={() => setSelectedJob(null)}
         company={mapToCompanyFormat(selectedJob)}
       />
     </div>
+    </>
   );
 };
 

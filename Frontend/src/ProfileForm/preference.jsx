@@ -23,12 +23,15 @@ function uniqueArray(arr) {
 }
 
 export default function Preference({ pointer, setPointer, inputs, setInputs }) {
-  const [sector, setSector] = useState("");
+
+  const userProfile = localStorage.getItem("profile");
+
+  const [sector, setSector] = useState(userProfile ? JSON.parse(userProfile).Preferred_type : "");
   const [sectors, setSectors] = useState([]);
   const [states, setStates] = useState([]);
-  const [selectedState, setSelectedState] = useState("");
+  const [selectedState, setSelectedState] = useState(userProfile ? JSON.parse(userProfile).Preferred_state : "");
   const [districts, setDistricts] = useState([]);
-  const [selectedDistricts, setSelectedDistricts] = useState([]);
+  const [selectedDistricts, setSelectedDistricts] = useState(userProfile ? JSON.parse(userProfile).Preferred_district : []);
   const [errors, setErrors] = useState({
     sector: false,
     state: false,
@@ -110,7 +113,7 @@ export default function Preference({ pointer, setPointer, inputs, setInputs }) {
         setDistricts(uniqueArray(districtNames));
       } catch (err) {
         console.error("Error fetching districts:", err);
-        setDistricts(["Fallback District 1", "Fallback District 2"]); // fallback
+        setDistricts(["Fallback District 1", "Fallback District 2"]);
       }
     }
     fetchDistricts();
@@ -148,8 +151,9 @@ export default function Preference({ pointer, setPointer, inputs, setInputs }) {
       state: selectedState,
       districts: selectedDistricts
     };
+    console.log("Submitting Profile:", payload);
 
-    const res = await axios.post(`http://localhost:5000/profile/${userId}`, payload);
+    const res = await axios.userProfile ? axios.put(`http://localhost:5000/profile/${userId}`, payload) : axios.post(`http://localhost:5000/profile/${userId}`, payload);
     console.log("Profile Response:", res.data);
 
     navigate("/dashboard");
@@ -234,7 +238,7 @@ export default function Preference({ pointer, setPointer, inputs, setInputs }) {
             helperText={
               errors.districts ? "Please select at least one district" : ""
             }
-            disabled={!selectedState} // disabled until state is selected
+            disabled={!selectedState} 
           />
         )}
       />

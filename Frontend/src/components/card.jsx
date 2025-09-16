@@ -33,8 +33,6 @@ const JobCard = ({ job, onView }) => {
           </span>
         ))}
       </div>
-
-      {/* ✅ Skill Match Section */}
       <div className="skill-match">
         <p className="skill-text">Skill Match: {job.skillMatch}%</p>
         <div className="skill-bar">
@@ -46,9 +44,8 @@ const JobCard = ({ job, onView }) => {
       </div>
 
       <div className="job-footer">
-        {/* 🔗 Call onView when button is clicked */}
         <button className="view-job-btn" onClick={onView}>
-          View Job ↗
+          View ↗
         </button>
       </div>
     </div>

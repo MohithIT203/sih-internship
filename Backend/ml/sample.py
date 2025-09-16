@@ -8,9 +8,9 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# ---------------------------
+
 # 1. Fetch internships
-# ---------------------------
+
 def fetch_internships():
     url = "http://localhost:5000/all-internship"
     data = requests.get(url).json()
@@ -31,17 +31,17 @@ def fetch_internships():
 
     return df
 
-# ---------------------------
 # 2. Fetch user profile
-# ---------------------------
+
+
 def fetch_user_profile(user_id):
     url = f"http://localhost:5000/profile/{user_id}"
     profile = requests.get(url).json()
     return profile
 
-# ---------------------------
+
 # 3. Recommendation logic
-# ---------------------------
+
 def recommend_internships(df, student_profile, top_n=5):
     df["combined_text"] = (
         df["qualification.course"].astype(str) + " " +
@@ -84,9 +84,9 @@ def recommend_internships(df, student_profile, top_n=5):
         })
     return recs
 
-# ---------------------------
+
 # 4. Flask route
-# ---------------------------
+
 @app.route("/recommendations/<user_id>", methods=["GET"])
 def get_recommendations(user_id):
     df = fetch_internships()

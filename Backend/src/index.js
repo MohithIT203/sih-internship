@@ -7,10 +7,11 @@ const PORT = process.env.PORT||5000;
 const register = require('../Routes/register');
 const internship = require('../Routes/internship');
 const profile = require('../Routes/profile');
-
+const cookieParser = require('cookie-parser');
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({origin:"*",credential:true}));
 
 

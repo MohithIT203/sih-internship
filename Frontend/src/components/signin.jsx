@@ -4,6 +4,7 @@ import "./signin.css";
 
   import axios from "axios";
 import { useNavigate } from "react-router";
+import Navbar from "./navbar";
 export default function SigninPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -12,7 +13,6 @@ export default function SigninPage() {
     email:"",
     password: "",
     confirmPassword: "",
-    termsAccepted: false,
   });
 
   const navigate = useNavigate();
@@ -26,10 +26,6 @@ const handleSubmit = async (e) => {
     return;
   }
 
-  if (!formData.termsAccepted) {
-    alert("You must accept the Terms and Conditions.");
-    return;
-  }
 
   try {
     const response = await axios.post("http://localhost:5000/register", {
@@ -40,6 +36,7 @@ const handleSubmit = async (e) => {
 
     // Save user ID in localStorage
     localStorage.setItem("user", response.data._id);
+    localStorage.setItem("userName", response.data.username);
 
     alert("Account registered successfully!");
     navigate("/form"); // navigate after success
@@ -51,6 +48,8 @@ const handleSubmit = async (e) => {
 
 
   return (
+    <>
+    <Navbar/>
     <div className="signin-container">
       <div className="signin-header">
         <div className="icon-circle">
@@ -107,7 +106,7 @@ const handleSubmit = async (e) => {
               className="toggle-passwords"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? "🙈" : "👁️"}
+              {/* {showPassword ? "🙈" : "👁️"} */}
             </button>
           </div>
 
@@ -129,26 +128,12 @@ const handleSubmit = async (e) => {
               className="toggle-passwords"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              {showConfirmPassword ? "🙈" : "👁️"}
+              {/* {showConfirmPassword ? "🙈" : "👁️"} */}
             </button>
           </div>
 
           {/* Terms & Conditions */}
-          <div className="options">
-            <label className="remember">
-              <input
-                type="checkbox"
-                checked={formData.termsAccepted}
-                onChange={(e) =>
-                  setFormData({ ...formData, termsAccepted: e.target.checked })
-                }
-              />{" "}
-              <p style={{ position: "relative", top: "-7px", left: "10px" }}>
-                Accept Terms and Conditions
-              </p>
-            </label>
-          </div>
-
+          
           {/* Register Button */}
           <button
             type="submit"
@@ -160,5 +145,6 @@ const handleSubmit = async (e) => {
         </form>
       </div>
     </div>
+    </>
   );
 }

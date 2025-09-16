@@ -8,22 +8,54 @@ function Landing() {
   const LoginNavigate = () => {
     navigate("/login");
   };
-
+  const homeNavigate = () => {
+    navigate("/");
+  };
+  const dashboardNavigate = () => {
+    navigate("/dashboard");
+  };
+  const LogoutNavigate = () => {
+    localStorage.clear();
+    navigate("/");
+  };
   const SignupNavigate = () => {
     navigate("/signup");
   };
-
+  const ProfileNavigate = () => {
+    navigate("/profile");
+  };
+  const isLoggedIn = localStorage.getItem("loggedIn") === "true";
   return (
     <>
       <div className="header">
         <p className="Title">InternPortal</p>
         <div className="button-group">
-          <button className="Sign-In" onClick={SignupNavigate}>
-            Sign In
-          </button>
-          <button className="Start" onClick={SignupNavigate}>
-            Get Started
-          </button>
+          {isLoggedIn ? (
+            <>
+              <button className="Sign-In" onClick={homeNavigate}>
+                Home
+              </button>
+              
+              <button className="Sign-In" onClick={dashboardNavigate}>
+                Dashboard
+              </button>
+              <button className="Sign-In" onClick={ProfileNavigate}>
+                Profile
+              </button>
+              <button className="Start" onClick={LogoutNavigate}>
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="Sign-In" onClick={LoginNavigate}>
+                Sign In
+              </button>
+              <button className="Start" onClick={SignupNavigate}>
+                Get Started
+              </button>
+            </>
+          )}
         </div>
       </div>
 

@@ -5,7 +5,7 @@ function Recommendations() {
   const [recs, setRecs] = useState([]);
 
   useEffect(() => {
-    const userId = localStorage.getItem("user"); // already stored at login
+    const userId = localStorage.getItem("user");
     axios.get(`http://localhost:8000/recommendations/${userId}`)
       .then(res => setRecs(res.data))
       .catch(err => console.error("Error:", err));

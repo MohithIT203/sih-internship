@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import "./login.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./navbar";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,18 +20,21 @@ const handleSubmit = async (e) => {
       email: formData.email,
       password: formData.password,
     });
-
-      // console.log("Login successful:", response.data);
     localStorage.setItem("user", response.data._id);
-    console.log("User ID stored in localStorage:", response.data._id);
+    localStorage.setItem("userName", response.data.username);
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("loggedIn", "true");
 
-    navigate("/form");
+    navigate("/dashboard");
   } catch (err) {
     console.log("An Error Occurred", err.response?.data || err.message);
+    // alert(err.response?.data?.message || "Login failed");
   }
 };
 
   return (
+    <>
+    <Navbar/>
     <div className="login-container">
       <div className="login-header">
         <div className="icon-circle">
@@ -72,19 +76,11 @@ const handleSubmit = async (e) => {
               className="toggle-password"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? "🙈" : "👁️"}
+              {/* {showPassword ? "🙈" : "👁️"} */}
             </button>
           </div>
 
-          <div className="options">
-            <label className="remember">
-              <input type="checkbox" style={{position:"relative",top:"7px"}}/> Remember me
-            </label>
-            <a href="/forgot-password" className="forgot-link">
-              Forgot password?
-            </a>
-          </div>
-
+         
           <button type="submit" className="signin-btn">
             Sign In
           </button>
@@ -98,5 +94,6 @@ const handleSubmit = async (e) => {
         </p>
       </div>
     </div>
+    </>
   );
 }

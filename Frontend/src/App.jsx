@@ -9,6 +9,8 @@ import SigninPage from "./components/signin";
 import InternshipProfileForm from "./ProfileForm/internshipProfileForm";
 import "./index.css";
 import Recommendations from "./pages/recommend";
+import { AppBar } from "@mui/material";
+import Profile from "./pages/Profile.jsx";
 
 
 function App() {
@@ -19,8 +21,8 @@ function App() {
       {/* <Route path="/dashboard" element={<Recommendations />} /> */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SigninPage />} />
+      <Route path="/profile" element={<Profile/>} />
       <Route path="/form" element={<InternshipProfileForm/>} />
-      
     </Routes>
   );
 }

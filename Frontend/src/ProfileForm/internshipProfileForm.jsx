@@ -12,9 +12,10 @@ import React from "react";
 import Education from "./education";
 import Skills from "./skills";
 import Perference from "./preference";
+import Navbar from "../components/navbar";
 
 export default function InternshipProfileForm() {
-
+  const userProfile = localStorage.getItem("profile");
   const [inputs,setInputs] = useState({
       course : "",
       branch : "",
@@ -30,6 +31,8 @@ export default function InternshipProfileForm() {
   const [pointer, setPointer] = useState(0);
 
   return (
+    <>
+    <Navbar/>
     <div className="flex justify-center mt-24">
       <div className="shadow-2xl rounded-2xl flex">
         {/* Left Sidebar Stepper */}
@@ -73,5 +76,6 @@ export default function InternshipProfileForm() {
         </div>
       </div>
     </div>
+    </>
   );
 }

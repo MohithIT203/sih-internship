@@ -13,9 +13,9 @@ export default function Education({ pointer, setPointer, setInputs }) {
     "B.Com": ["Accounting", "Finance", "Economics"],
     "BBA": ["Business", "Administration", "Management"],
   };
-
-  const [course, setCourse] = useState("");
-  const [branch, setBranch] = useState("");
+  const userProfile = localStorage.getItem("profile");
+  const [course, setCourse] = useState(userProfile ? JSON.parse(userProfile).Course : "");
+  const [branch, setBranch] = useState(userProfile ? JSON.parse(userProfile).Branch : "");
   const [errors, setErrors] = useState({
     course: false,
     branch: false,
