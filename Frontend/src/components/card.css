@@ -20,6 +20,7 @@
 .job-card-header {
   display: flex;
   align-items: center;
+  /* justify-content: space-between; */
   gap: 15px;
   margin-bottom: 16px;
 }
@@ -124,4 +125,11 @@
   background: linear-gradient(to right, #4f46e5, #7c3aed);
   border-radius: 6px;
   transition: width 0.4s ease;
+}
+
+.badge {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-left: 10px;
 }

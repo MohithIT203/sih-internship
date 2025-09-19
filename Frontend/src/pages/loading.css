@@ -19,7 +19,6 @@
   border-radius: 1rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   text-align: center;
-
   width: 100%; /* card takes full width of parent */
   max-width: 550px; /* but never exceeds 550px */
   /* min-width: 300px; */

@@ -4,13 +4,11 @@ import pic1 from "../assets/pic1.png";
 import pic2 from "../assets/pic2.jpeg";
 import pic3 from "../assets/pic3.jpeg";
 import pic4 from "../assets/pic4.png";
-
 import JobCard from "../components/card";
 import CompanyInternshipModal from "../components/popup";
 
 const Dashboard = () => {
   const [selectedJob, setSelectedJob] = useState(null);
-
   // Original job data
   const [data] = useState([
     {
@@ -22,7 +20,7 @@ const Dashboard = () => {
       location: "Sathyamangalam",
       logo: pic1,
       stipend: "1",
-      skillMatch: 63,
+      skillMatch: 83,
       tags: ["Frontend", "React", "Agile"],
     },
     {
@@ -50,7 +48,7 @@ const Dashboard = () => {
       tags: ["SQL", "Python", "Analytics"],
     },
     {
-      InternshipID: 4,
+      InternshipID: 4, 
       InternshipTitle: "UI/UX Designer",
       Areafield: "Design",
       CandidatesApplied: 10,
@@ -58,12 +56,11 @@ const Dashboard = () => {
       location: "Erode",
       logo: pic4,
       stipend: "1.2",
-      skillMatch: 80,
+      skillMatch: 60,
       tags: ["Figma", "User Research", "Prototyping", "Ux Design", "Adobe"],
     },
   ]);
 
-  // 🔄 Transform JobCard data shape into modal-friendly company object
   const mapToCompanyFormat = (job) => {
     if (!job) return null;
     return {
@@ -96,55 +93,57 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-wrapper">
-      {/* ===== AI Recommendations Header ===== */}
-      <div className="recommendations-header">
-        <div className="recommendations-icon">✨</div>
-        <h1>Your AI-Powered Recommendations</h1>
-        <p>
-          Based on your preferences, we’ve found the most suitable internships
-          for you. Each recommendation includes a match score to help you
-          prioritize.
-        </p>
-      </div>
-
-      {/* ===== Stats Section ===== */}
-      <div className="recommendation-stats">
-        <div className="stat-card">
-          <span className="stat-icon">🎯</span>
-          <h3>Avg Match Score</h3>
-          <p>63%</p>
+    <>
+      <div className="dashboard-wrapper">
+        {/* ===== AI Recommendations Header ===== */}
+        <div className="recommendations-header">
+          <div className="recommendations-icon">✨</div>
+          <h1>Your AI-Powered Recommendations</h1>
+          <p>
+            Based on your preferences, we’ve found the most suitable internships
+            for you. Each recommendation includes a match score to help you
+            prioritize.
+          </p>
         </div>
-        <div className="stat-card">
-          <span className="stat-icon">👥</span>
-          <h3>Companies</h3>
-          <p>{data.length}</p>
-        </div>
-        <div className="stat-card">
-          <span className="stat-icon">📈</span>
-          <h3>Best Match</h3>
-          <p>{Math.max(...data.map((j) => j.skillMatch))}%</p>
-        </div>
-      </div>
 
-      {/* ===== Internship Cards ===== */}
-      <div className="dashboard-container">
-        {data.map((job) => (
-          <JobCard
-            key={job.InternshipID}
-            job={job}
-            onView={() => setSelectedJob(job)} // open modal
-          />
-        ))}
-      </div>
+        {/* ===== Stats Section ===== */}
+        <div className="recommendation-stats">
+          <div className="stat-card">
+            <span className="stat-icon">🎯</span>
+            <h3>Avg Match Score</h3>
+            <p>63%</p>
+          </div>
+          <div className="stat-card">
+            <span className="stat-icon">👥</span>
+            <h3>Companies</h3>
+            <p>{data.length}</p>
+          </div>
+          <div className="stat-card">
+            <span className="stat-icon">📈</span>
+            <h3>Best Match</h3>
+            <p>{Math.max(...data.map((j) => j.skillMatch))}%</p>
+          </div>
+        </div>
 
-      {/* ===== Modal Integration ===== */}
-      <CompanyInternshipModal
-        open={Boolean(selectedJob)}
-        onClose={() => setSelectedJob(null)}
-        company={mapToCompanyFormat(selectedJob)}
-      />
-    </div>
+        {/* ===== Internship Cards ===== */}
+        <div className="dashboard-container">
+          {data.map((job) => (
+            <JobCard
+              key={job.InternshipID}
+              job={job}
+              onView={() => setSelectedJob(job)} // open modal
+            />
+          ))}
+        </div>
+
+        {/* ===== Modal Integration ===== */}
+        <CompanyInternshipModal
+          open={Boolean(selectedJob)}
+          onClose={() => setSelectedJob(null)}
+          company={mapToCompanyFormat(selectedJob)}
+        />
+      </div>
+    </>
   );
 };
 

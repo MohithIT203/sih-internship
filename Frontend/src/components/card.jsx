@@ -1,9 +1,15 @@
 import React from "react";
 import "./card.css";
+import Gold from "../assets/gold.jpg";
 
 const JobCard = ({ job, onView }) => {
+  let img;
+  
+  if (job.skillMatch >= 80) img = Gold;
+
   return (
     <div className="job-card">
+      {/* Header with company logo and badge */}
       <div className="job-card-header">
         <img src={job.logo} alt={job.company} className="job-logo" />
         <div>
@@ -12,8 +18,14 @@ const JobCard = ({ job, onView }) => {
             {job.company} • {job.location}
           </p>
         </div>
+        {img && (
+          <div>
+            <img src={img} alt="badge" className="badge" />
+          </div>
+        )}
       </div>
 
+      {/* Job info */}
       <div className="job-info">
         <p>
           <strong>📌 Field:</strong> {job.Areafield}
@@ -22,10 +34,11 @@ const JobCard = ({ job, onView }) => {
           <strong>👥 Applied:</strong> {job.CandidatesApplied}
         </p>
         <p>
-          <strong>💰 Stipend:</strong>${job.stipend} k/month
+          <strong>💰 Stipend:</strong> ${job.stipend} k/month
         </p>
       </div>
 
+      {/* Tags */}
       <div className="job-tags">
         {job.tags.map((tag, index) => (
           <span key={index} className="tag">
@@ -34,7 +47,7 @@ const JobCard = ({ job, onView }) => {
         ))}
       </div>
 
-      {/* ✅ Skill Match Section */}
+      {/* Skill match bar */}
       <div className="skill-match">
         <p className="skill-text">Skill Match: {job.skillMatch}%</p>
         <div className="skill-bar">
@@ -45,10 +58,10 @@ const JobCard = ({ job, onView }) => {
         </div>
       </div>
 
+      {/* Footer */}
       <div className="job-footer">
-        {/* 🔗 Call onView when button is clicked */}
         <button className="view-job-btn" onClick={onView}>
-          View Job ↗
+          View Details ↗
         </button>
       </div>
     </div>
